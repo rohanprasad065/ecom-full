@@ -1,23 +1,17 @@
-import { useEffect } from "react";
-import { db } from "./firebase";
-import { collection, getDocs } from "firebase/firestore";
+import { Routes, Route } from "react-router-dom";
+import SignIn from "./pages/signin"; // make sure your SignIn page is inside pages folder
 
 function App() {
-  useEffect(() => {
-    const fetchData = async () => {
-      const querySnapshot = await getDocs(collection(db, "products"));
-      querySnapshot.forEach((doc) => {
-        console.log(doc.id, " => ", doc.data());
-      });
-    };
-
-    fetchData();
-  }, []);
-
   return (
-    <div>
-      <h1>Firebase Connected ✅</h1>
-    </div>
+    <Routes>
+      
+      <Route path="/signin" element={<SignIn />} />
+
+      
+
+      {/* Any other path → redirect to SignIn */}
+      <Route path="*" element={<SignIn />} />
+    </Routes>
   );
 }
 
