@@ -1,17 +1,23 @@
 import { Routes, Route } from "react-router-dom";
-import SignIn from "./pages/signin"; // make sure your SignIn page is inside pages folder
+import SignIn from "./pages/signin";
+import Navbar from "./pages/navbar"; 
+import Fotter from "./pages/fotter";
 
 function App() {
   return (
-    <Routes>
-      
-      <Route path="/signin" element={<SignIn />} />
+    <>
+      {/* Navbar always visible */}
+      <Navbar />
 
-      
+      {/* Routes */}
+      <Routes>
+        <Route path="/signin" element={<SignIn />} />
+        <Route path="*" element={<SignIn />} />
+      </Routes>
 
-      {/* Any other path → redirect to SignIn */}
-      <Route path="*" element={<SignIn />} />
-    </Routes>
+      {/* Footer always visible */}
+      <Fotter />
+    </>
   );
 }
 

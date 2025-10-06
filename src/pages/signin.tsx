@@ -1,5 +1,8 @@
 import React, { useState, FC, ChangeEvent } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
+import { auth } from "../firebase";
+import { useAuthStore } from "../store/useAuthStore";
 
 type UserType = 'buyer' | 'seller';
 
@@ -17,15 +20,41 @@ const AuthPage: FC = () => {
   const [password, setPassword] = useState<string>('');
   const [name, setName] = useState<string>('');
 
-  const handleSubmit = (): void => {
-    const formData: AuthFormData = {
-      userType,
-      email,
-      password,
-      ...(name && { name })
-    };
-    console.log(formData);
-  };
+  const handleSubmit = async (): Promise<void> => {
+  try {
+    if (isLogin) {
+      // 🔹 LOGIN
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+
+      // Store in Zustand
+      useAuthStore.getState().setUser({
+        uid: user.uid,
+        email: user.email!,
+        role: userType,
+      });
+
+      alert("Logged in successfully!");
+    } else {
+      // 🔹 SIGN UP
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+
+      // Store in Zustand
+      useAuthStore.getState().setUser({
+        uid: user.uid,
+        name,
+        email: user.email!,
+        role: userType,
+      });
+
+      alert("Account created successfully!");
+    }
+  } catch (error: any) {
+    console.error(error);
+    alert(error.message);
+  }
+};
 
   const handleEmailChange = (e: ChangeEvent<HTMLInputElement>): void => {
     setEmail(e.target.value);
